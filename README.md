@@ -49,7 +49,16 @@
   </ol>
 </details>
 
-# Chord Symbol Recognition Research Project
+# DSP Final Project
+
+
+<!-- ROADMAP -->
+## Roadmap
+
+### Week 1:
+  - Jerry: Oscillators; include waveform type, frequency
+  - Tess: Effect
+  - Yihao: IO
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -130,10 +139,6 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 
 
-<!-- ROADMAP -->
-## Roadmap
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a list of proposed features (and known issues).
 
 
 
