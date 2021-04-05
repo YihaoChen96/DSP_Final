@@ -1,0 +1,2 @@
+class InputProcessor:
+    def __
