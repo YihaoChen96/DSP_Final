@@ -32,6 +32,7 @@ class OSC:
         """ Define behavior each time this instance is called """
         result=np.zeros(sampleRate*length)
         if self.Name=='sine':
+            rate=self.Freq/sampleRate
             for i in range(sampleRate*length):
                 result[i]=math.sin(2*math.pi*(i*rate))
         if self.Name=='triangle':
