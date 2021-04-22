@@ -2,12 +2,15 @@ import numpy as np
 from oscillator import OSC
 import math
 from scipy import signal
-from scipy.fft import fft, ifft
+from scipy.signal import convolve
 from scipy.io.wavfile import write
 from IPython.display import Audio
 import soundfile as sf
 import copy
 import sys
+import wave
+import os
+import struct
 
 class RingBuffer(object):
     def __init__(self, maxDelay):
@@ -54,7 +57,7 @@ class LinearRingBuffer(RingBuffer):
 
 
 class Vibrato(object):
-    def __init__(self, maxDelaySamps, feedback):
+    def __init__(self, maxDelaySamps = 300, feedback = -0.7):
         '''
         Effect1 - vibrato with feedback
         Inputs: 
@@ -90,7 +93,7 @@ class Vibrato(object):
     
 
 class Chorus(object):
-    def __init__(self, fmod, BL, FF):
+    def __init__(self, fmod = 1.5, BL=1.0, FF=0.7):
         '''
         Effect2 - Chorus
         Inputs: 
@@ -130,7 +133,7 @@ class Chorus(object):
     
 
 class Wahwah(object):
-    def __init__(self, min_cutoff, max_cutoff, rate, damp):
+    def __init__(self, min_cutoff=300, max_cutoff=4500, rate=10000, damp=0.4):
         '''
         Effect2 - Wahwah
         Inputs: 
@@ -179,8 +182,62 @@ class Wahwah(object):
         return bandpass
 
 
+class Reverb(object):
+    def __init__(self, gain_dry = 1, gain_wet = 1, reverb_type = "hall"):
+        '''
+        Convolutional Reverb
+        Inputs: 
+        - gain_dry
+        - gain_wet
+        - reverb_type: 'room', 'hall', 'parking_garage'
+        '''
+        self.gain_dry = gain_dry
+        self.gain_wet = gain_wet
+        self.reverb_type = reverb_type
+        self.sr = 44100
+    
+    def get_reverb_in(self):
+        # load reverb impulse samples, downloaded from https://www.voxengo.com/impulses/
+        if self.reverb_type == "room":
+            fp = 'IMreverbs/Nice Drum Room.wav'
+        elif self.reverb_type == "hall":
+            fp = 'IMreverbs/Large Long Echo Hall.wav'
+        elif self.reverb_type == "parking_garage":
+            fp = 'IMreverbs/Parking Garage.wav'
+        else:
+            raise ValueError("Unknown Reverb Type.")
+        
+        cur_dir = os.getcwd()
+        type_path = os.path.join(cur_dir, fp)
+        wav_file = wave.open(type_path, 'r')
+        num_samples_reverb = wav_file.getnframes()
+        num_channels_reverb = wav_file.getnchannels()
+        reverb = wav_file.readframes(num_samples_reverb)
+        total_samples_reverb = num_samples_reverb * num_channels_reverb
+        wav_file.close()
+        
+        reverb = struct.unpack('{n}h'.format(n = total_samples_reverb), reverb)
+        reverb = np.array([reverb[0::2], reverb[1::2]], dtype = np.float64)
+        reverb[0] /= np.max(np.abs(reverb[0]), axis = 0)
+        print(reverb[0])
+        return reverb[0]
+            
+
+    def __call__(self, signal):  
+
+        num_samples_signal = len(signal)
+        
+        reverb = self.get_reverb_in()
+        
+        output = np.zeros(2*num_samples_signal - 1, dtype = np.float64)
+        output = (convolve(signal * self.gain_dry, reverb * self.gain_wet, method = 'fft'))
+    
+        return output
+
+
+
 class Delay(object):
-    def __init__(self, delayTime):
+    def __init__(self, delayTime = 0.5):
         '''
         Add on effect - Delay
         input: delayTime
@@ -189,7 +246,6 @@ class Delay(object):
         self.sr = 44100
     
     def __call__(self, signal):
-        # delayTime = 0.25
         delaySamps = int(self.dt * self.sr)
         outputSamps = len(signal) + delaySamps
 
