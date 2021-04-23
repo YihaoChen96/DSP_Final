@@ -5,6 +5,7 @@ class OSC:
     """ Base Class for Oscillators """
 
     def __init__(self,name,freq, length):
+
         """ 
             Specify argument for initialization.
             Example usage:
