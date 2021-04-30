@@ -30,14 +30,16 @@ class OSC:
     def __call__(self):#The default audio sample rate is 44100
         sampleRate=44100
         """ Define behavior each time this instance is called """
-        result=np.zeros(sampleRate*self.length)
+        sample_num = int(sampleRate*self.length)
+
+        result=np.zeros(sample_num)
         if self.Name=='sine':
             rate=self.Freq/sampleRate
-            for i in range(sampleRate*self.length):
+            for i in range(sample_num):
                 result[i]=math.sin(2*math.pi*(i*rate))
         if self.Name=='triangle':
             rate=self.Freq/sampleRate
-            for i in range(sampleRate*self.length):
+            for i in range(sample_num):
                 pecent=(i%(1/rate))*rate
                 if pecent<=0.25:
                     result[i]=4*pecent
@@ -47,7 +49,7 @@ class OSC:
                     result[i]=4*pecent-4
         if self.Name=='square':
             rate=self.Freq/sampleRate
-            for i in range(sampleRate*self.length):
+            for i in range(sample_num):
                 pecent=(i%(1/rate))*rate
                 if pecent==0:
                     result[i]=0
