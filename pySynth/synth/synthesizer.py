@@ -3,7 +3,7 @@ import numpy as np
 from .oscillator import OSC
 from .filter import BandPass, LowPass
 from .effect import Chorus
-from pySynth.control.stream import Stream
+from pySynth.control.stream import Stream, MIDIStream
 class AddSynth:
     def __init__(self, *streams):
         self.streams = streams
