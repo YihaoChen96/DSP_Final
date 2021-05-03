@@ -44,10 +44,11 @@ class MIDIStream:
             if start - prev_ls[2] > 0: # having rest between previous event
                 osc = OSC(self.osc_type,  2, start-prev_ls[2])
                 chain = Chain(osc, self.effects)
-                output_stream.append(osc)
+                output_stream.append(chain)
             freq = self.ToolMidi2Freq(pitch)
             osc = OSC(self.osc_type , freq, end-start)
-            self.output_osc_array.extend(osc())
+            chain = Chain(osc, self.effects)
+            output_stream.append(chain)
             prev_ls = ls
 
-        return self.output_chains
+        return output_stream
