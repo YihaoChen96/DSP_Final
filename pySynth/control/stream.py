@@ -4,7 +4,7 @@ from pySynth.synth.oscillator import *
 from pySynth.synth.synthesizer import *
 
 
-class Stream:
+class Chain:
     def __init__(self, module_list):
 
         self.module_list = module_list
@@ -21,3 +21,10 @@ class Stream:
             signal = module_list[i](signal)
 
         return signal
+
+class Stream:
+    def __init__(self, input, chain):
+        pass
+
+    def __call__(self):
+        pass
