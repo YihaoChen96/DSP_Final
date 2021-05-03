@@ -207,7 +207,9 @@ class Reverb(object):
         else:
             raise ValueError("Unknown Reverb Type.")
         
-        cur_dir = os.getcwd()
+        # cur_dir = os.getcwd()
+        # type_path = os.path.join(cur_dir, fp)
+        cur_dir = os.path.dirname(__file__)
         type_path = os.path.join(cur_dir, fp)
         wav_file = wave.open(type_path, 'r')
         num_samples_reverb = wav_file.getnframes()
