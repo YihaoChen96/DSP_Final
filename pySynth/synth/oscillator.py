@@ -9,7 +9,7 @@ import sys
 class OSC:
     """ Base Class for Oscillators """
 
-    def __init__(self,name,freq, length):
+    def __init__(self, name, freq = None, length = None):
 
         """ 
             Specify argument for initialization.
@@ -26,24 +26,34 @@ class OSC:
             TODO: For each function, specify params and output in docstring
         
         """
-        self.Name=name
-        self.Freq=freq
+        self.name=name
+        self.freq=freq
         self.length=length
         
         
 
-    def __call__(self):#The default audio sample rate is 44100
+    def __call__(self, freq = None, length = None):#The default audio sample rate is 44100
+        
+        assert self.freq is not None or freq is not None, "OSC needs non-None value for frequency when is initialized or called"
+        assert self.length is not None or length is not None, "OSC needs non-None value for length when is initialized or called"
+
+        if freq is None:
+            freq = self.freq
+        
+        if length is None:
+            length = self.length
+
         sampleRate=44100
         """ Define behavior each time this instance is called """
-        sample_num = int(sampleRate*self.length)
+        sample_num = int(sampleRate * length)
 
         result=np.zeros(sample_num)
-        if self.Name=='sine':
-            rate=self.Freq/sampleRate
+        if self.name=='sine':
+            rate = freq/sampleRate
             for i in range(sample_num):
                 result[i]=math.sin(2*math.pi*(i*rate))
-        if self.Name=='triangle':
-            rate=self.Freq/sampleRate
+        if self.name=='triangle':
+            rate = freq/sampleRate
             for i in range(sample_num):
                 pecent=(i%(1/rate))*rate
                 if pecent<=0.25:
@@ -52,8 +62,8 @@ class OSC:
                     result[i]=-4*(pecent)+2
                 if pecent>0.75:
                     result[i]=4*pecent-4
-        if self.Name=='square':
-            rate=self.Freq/sampleRate
+        if self.name=='square':
+            rate= freq/sampleRate
             for i in range(sample_num):
                 pecent=(i%(1/rate))*rate
                 if pecent==0:
@@ -93,7 +103,7 @@ class GenerateFromMIDI(object):
         for ls in self.midi_info_ls: # for each note event
             [pitch, start, end] = ls
             if start - prev_ls[2] > 0: # having rest between previous event
-                osc = OSC(self.osc_type,  0, start-prev_ls[2])
+                osc = OSC(self.osc_type,  2, start-prev_ls[2])
                 self.output_osc_array.extend(osc())
             freq = self.ToolMidi2Freq(pitch)
             osc = OSC(self.osc_type , freq, end-start)
