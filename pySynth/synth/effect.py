@@ -1,5 +1,5 @@
 import numpy as np
-from oscillator import OSC
+from pySynth.synth.oscillator import OSC
 import math
 from scipy import signal
 from scipy.signal import convolve
