@@ -1,6 +1,11 @@
 import math
 import numpy as np
 
+import os
+import sys
+
+
+
 class OSC:
     """ Base Class for Oscillators """
 
@@ -60,3 +65,51 @@ class OSC:
                 if pecent==0.5:
                     result[i]=0
         return result
+
+
+class GenerateFromMIDI(object):
+    '''
+    generate oscillator array from midi file
+    input: midi_info_ls (from io/IO.py), contains lists of [pitch, start, end]
+    output: oscillator array 
+    '''
+    def __init__(self, midi_info_list, osc_type):
+        self.midi_info_ls =  midi_info_list
+        self.osc_type = osc_type
+        self.output_osc_array = []
+
+
+    def ToolMidi2Freq(self, pitch, fA4InHz = 440):
+        if fA4InHz <= 0:
+            return 0
+        else:
+            return fA4InHz * 2**((pitch-69) / 12)
+    
+    def __call__(self):
+        if len(self.midi_info_ls) == 0:
+            raise RuntimeError("Empty Midi List")
+
+        prev_ls = [0,0,0]
+        for ls in self.midi_info_ls: # for each note event
+            [pitch, start, end] = ls
+            if start - prev_ls[2] > 0: # having rest between previous event
+                osc = OSC(self.osc_type,  0, start-prev_ls[2])
+                self.output_osc_array.extend(osc())
+            freq = self.ToolMidi2Freq(pitch)
+            osc = OSC(self.osc_type , freq, end-start)
+            self.output_osc_array.extend(osc())
+            prev_ls = ls
+        #norm = np.linalg.norm(self.output_osc_array)
+        #self.output_osc_array = self.output_osc_array/norm
+        return self.output_osc_array
+
+
+
+
+
+'''
+midi_ls = [[60, 0.0, 0.5], [64, 0.5, 1.0], [67, 1.0, 1.5], [64, 2.0, 2.5], [62, 2.5, 2.75], [60, 2.75, 3.0], [62, 3.0, 3.125], [60, 3.25, 3.375], [60, 3.5, 4.0], [69, 4.0, 4.5], [67, 4.5, 5.0], [62, 5.0, 5.25], [64, 5.25, 5.5], [62, 5.5, 5.75], [62, 5.75, 6.0], [64, 6.0, 6.25], [60, 6.5, 7.0], [62, 7.0, 7.5], [60, 7.5, 8.0]]
+osc_arr = GenerateFromMIDI(midi_ls, "sine")
+osc_array = osc_arr() # the audio array 
+'''
+ 

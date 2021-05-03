@@ -57,7 +57,7 @@ class LinearRingBuffer(RingBuffer):
 
 
 class Vibrato(object):
-    def __init__(self, maxDelaySamps = 300, feedback = -0.7):
+    def __init__(self, maxDelaySamps = 100, feedback = -0.7):
         '''
         Effect1 - vibrato with feedback
         Inputs: 
@@ -133,7 +133,7 @@ class Chorus(object):
     
 
 class Wahwah(object):
-    def __init__(self, min_cutoff=300, max_cutoff=4500, rate=10000, damp=0.4):
+    def __init__(self, min_cutoff=300, max_cutoff=4000, rate=10000, damp=0.2):
         '''
         Effect2 - Wahwah
         Inputs: 
