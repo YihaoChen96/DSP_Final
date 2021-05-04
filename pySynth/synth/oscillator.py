@@ -5,11 +5,39 @@ import os
 import sys
 
 
+class ADSR:
+    def __init__(self, length, divide1=1/9, divide2=2/9, divide3=2/3):
+        
+        assert divide1 >0 and divide2 > 0 and divide3 >0, "Division points must be greater than 0"
+
+        division_sum = np.sum([divide1, divide2, divide3])
+        self.divide1 = divide1/division_sum
+        self.divide2 = divide2/division_sum
+        self.divide3 = divide3/division_sum
+
+    def __call__(self, length):
+
+        d1=int(length*self.divide1)
+        d2=int(length*self.divide2)
+        d3=int(length*self.divide3)
+        result=np.zeros(length)
+
+        for i in range(d1):
+            result[i]=i/d1
+        for i in range(d1,d2):
+            result[i]=(-0.3*i+d2-0.7*d1)/(d2-d1)
+        for i in range(d2,d3):
+            result[i]=0.7
+        for i in range(d3,length):
+            result[i]=(-0.7*i+0.7*length)/(length-d3)
+        
+        return result
+
 
 class OSC:
     """ Base Class for Oscillators """
 
-    def __init__(self, name, freq = None, length = None):
+    def __init__(self, name, freq = None, length = None, adsr = None):
 
         """ 
             Specify argument for initialization.
@@ -29,10 +57,11 @@ class OSC:
         self.name=name
         self.freq=freq
         self.length=length
+        self.adsr = adsr
         
         
 
-    def __call__(self, freq = None, length = None):#The default audio sample rate is 44100
+    def __call__(self, freq = None, length = None, adsr = None):#The default audio sample rate is 44100
         
         assert self.freq is not None or freq is not None, "OSC needs non-None value for frequency when is initialized or called"
         assert self.length is not None or length is not None, "OSC needs non-None value for length when is initialized or called"
@@ -43,6 +72,9 @@ class OSC:
         if length is None:
             length = self.length
 
+        if adsr is None:
+            adsr = self.adsr
+        
         sampleRate=44100
         """ Define behavior each time this instance is called """
         sample_num = int(sampleRate * length)
@@ -74,6 +106,8 @@ class OSC:
                     result[i]=-1
                 if pecent==0.5:
                     result[i]=0
+        if adsr is not None:
+            results = results * adsr()
         return result
 
 
