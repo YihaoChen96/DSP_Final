@@ -11,7 +11,7 @@ class AddSynth:
 
         for i in range(len(self.streams)):
             self.streams[i] = np.pad(self.streams[i], (0, self.max_len - len(self.streams[i])))
-
+        self.streams = np.vstack(self.streams)
     
     def __call__(self):
         return np.mean(self.streams, axis = 0)
@@ -28,5 +28,8 @@ class WaveTable:
         signal_stream = []
         for t in range(len(oscs[0])):
             add = AddSynth([oscs[i, t]() for i in range(len(oscs))])()
+            # print(add.shape)
             signal_stream.append(add)
-        return np.hstack(signal_stream)
+        signal = np.hstack(signal_stream)
+
+        return signal
