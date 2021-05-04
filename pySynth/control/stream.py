@@ -52,11 +52,11 @@ class MIDIStream(Stream):
         for ls in midi_info_ls: # for each note event
             [pitch, start, end] = ls
             if start - prev_ls[2] > 0: # having rest between previous event
-                osc = OSC(self.osc_type,  2, start-prev_ls[2], adsr)
+                osc = OSC(self.osc_type,  2, start-prev_ls[2], self.adsr)
                 # chain = Chain(osc, self.effects)
                 output_stream.append(osc)
             freq = Midi2Freq(pitch)
-            osc = OSC(self.osc_type , freq, end-start, adsr)
+            osc = OSC(self.osc_type , freq, end-start, self.adsr)
             # chain = Chain(osc, self.effects)
             output_stream.append(osc)
             prev_ls = ls
@@ -73,11 +73,11 @@ class MIDIStream(Stream):
         for ls in midi_info_ls: # for each note event
             [pitch, start, end] = ls
             if start - prev_ls[2] > 0: # having rest between previous event
-                osc = OSC(self.osc_type,  2, start-prev_ls[2], adsr)
+                osc = OSC(self.osc_type,  2, start-prev_ls[2], self.adsr)
                 # chain = Chain(osc, self.effects)
                 output_stream.extend(osc())
             freq = Midi2Freq(pitch)
-            osc = OSC(self.osc_type , freq, end-start, adsr)
+            osc = OSC(self.osc_type , freq, end-start, self.adsr)
             # chain = Chain(osc, self.effects)
             output_stream.extend(osc())
             prev_ls = ls
