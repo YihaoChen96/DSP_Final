@@ -1,5 +1,5 @@
 import numpy as np
-from oscillator import OSC
+from pySynth.synth.oscillator import OSC
 import math
 from scipy import signal
 from scipy.signal import convolve
@@ -207,7 +207,7 @@ class Reverb(object):
         else:
             raise ValueError("Unknown Reverb Type.")
         
-        cur_dir = os.getcwd()
+        cur_dir = os.path.dirname(__file__)
         type_path = os.path.join(cur_dir, fp)
         wav_file = wave.open(type_path, 'r')
         num_samples_reverb = wav_file.getnframes()
@@ -219,7 +219,7 @@ class Reverb(object):
         reverb = struct.unpack('{n}h'.format(n = total_samples_reverb), reverb)
         reverb = np.array([reverb[0::2], reverb[1::2]], dtype = np.float64)
         reverb[0] /= np.max(np.abs(reverb[0]), axis = 0)
-        print(reverb[0])
+        # print(reverb[0])
         return reverb[0]
             
 
@@ -237,7 +237,7 @@ class Reverb(object):
 
 
 class Delay(object):
-    def __init__(self, delayTime = 0.5):
+    def __init__(self, delayTime = 0.25):
         '''
         Add on effect - Delay
         input: delayTime
