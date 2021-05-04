@@ -20,8 +20,13 @@ class AddSynth:
 class WaveTable:
     def __init__(self, *streams):
         self.streams = streams
-        for stream in streams:
-            assert isinstance(stream, OSC) or isinstance(stream, Stream)
     
-    def __call__(self):
-        return np.hstack([stream() for stream in self.streams])
+    def __call__(self, midi_ls):
+        
+        oscs = np.vstack([stream(midi_ls) for stream in self.streams])
+        
+        signal_stream = []
+        for t in range(len(oscs[0])):
+            add = AddSynth([oscs[i, t]() for i in range(len(oscs))])()
+            signal_stream.append(add)
+        return np.hstack(signal_stream)
