@@ -7,11 +7,12 @@ from pySynth.control.stream import Stream, MIDIStream
 class AddSynth:
     def __init__(self, *streams):
         self.streams = streams
-        for stream in streams:
-            assert isinstance(stream, OSC) or isinstance(stream, Stream)
+        # for stream in streams:
+        #     assert isinstance(stream, OSC) or isinstance(stream, Stream)
     
     def __call__(self):
-        return np.mean([stream() for stream in self.streams], axis = 0)
+        # return np.mean([stream() for stream in self.streams], axis = 0)
+        return np.mean(self.streams, axis = 0)
 
 
 class WaveTable:
