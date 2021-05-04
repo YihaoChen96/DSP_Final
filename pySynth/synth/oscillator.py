@@ -6,14 +6,15 @@ import sys
 
 
 class ADSR:
-    def __init__(self, divide1=1/9, divide2=2/9, divide3=2/3):
+    def __init__(self, divide1=1/9, divide2=2/9, divide3=5/9):
         
         assert divide1 >0 and divide2 > 0 and divide3 >0, "Division points must be greater than 0"
+        assert divide1 <=divide2<=divide3 <=1, "Division points must all be less or equal to 1 in ascending order"
 
-        division_sum = np.sum([divide1, divide2, divide3])
-        self.divide1 = divide1/division_sum
-        self.divide2 = divide2/division_sum
-        self.divide3 = divide3/division_sum
+        # division_sum = np.sum([divide1, divide2, divide3])
+        self.divide1 = divide1
+        self.divide2 = divide2
+        self.divide3 = divide3
 
     def __call__(self, length):
 
