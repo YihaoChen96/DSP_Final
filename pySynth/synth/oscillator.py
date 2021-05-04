@@ -6,7 +6,7 @@ import sys
 
 
 class ADSR:
-    def __init__(self, length, divide1=1/9, divide2=2/9, divide3=2/3):
+    def __init__(self, divide1=1/9, divide2=2/9, divide3=2/3):
         
         assert divide1 >0 and divide2 > 0 and divide3 >0, "Division points must be greater than 0"
 
@@ -107,7 +107,7 @@ class OSC:
                 if pecent==0.5:
                     result[i]=0
         if adsr is not None:
-            results = results * adsr()
+            result = result * adsr(sample_num)
         return result
 
 
