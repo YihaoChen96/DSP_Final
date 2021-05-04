@@ -6,6 +6,8 @@ import numpy as np
 from scipy.io import wavfile
 from mido import MidiFile
 from pydub import AudioSegment
+import soundfile as sf
+
 pretty_midi.pretty_midi.MAX_TICK = 1e10
 
 class ReadMIDI(object):
@@ -38,17 +40,20 @@ def saveAudio(filename, data, sr = 44100, format = "wav", bit_depth = 16, float3
         else:
             dtype = np.int32
     elif bit_depth == 16:
-        dtype = np.int16
-    elif bit_depth == 8:
-        dtype = np.uint8
+        dtype = "PCM_16"
+    elif bit_depth == 24:
+        dtype = "PCM_24"
 
     # Write into wav first
-    wavfile.write(filename, sr, data.astype(dtype))
+    # wavfile.write(filename, sr, data.astype(dtype))
     
-    # Convert into mp3
-    if format == "mp3":
-        audio = AudioSegment.from_wav(filename)
-        audio.export(filename, format = "mp3")
+    sf.write(filename, data, sr, subtype=dtype, format = format)
+
+
+    # # Convert into mp3
+    # if format == "mp3":
+    #     audio = AudioSegment.from_wav(filename)
+    #     audio.export(filename, format = "mp3")
 
 '''
 # test script
