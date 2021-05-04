@@ -219,7 +219,7 @@ class Reverb(object):
         reverb = struct.unpack('{n}h'.format(n = total_samples_reverb), reverb)
         reverb = np.array([reverb[0::2], reverb[1::2]], dtype = np.float64)
         reverb[0] /= np.max(np.abs(reverb[0]), axis = 0)
-        print(reverb[0])
+        # print(reverb[0])
         return reverb[0]
             
 
