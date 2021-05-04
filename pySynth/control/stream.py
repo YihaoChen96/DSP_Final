@@ -11,25 +11,21 @@ def Midi2Freq(pitch, fA4InHz = 440):
     else:
         return fA4InHz * 2**((pitch-69) / 12)
 
-class Chain:
-    def __init__(self, generator, effects):
-        self.generator = generator
+class EffectChain:
+    def __init__(self, *effects):
+        
         self.effects = effects
+        # assert isinstance(self.generator, OSC), "The first module must be an oscillator"
 
-        assert isinstance(self.generator, OSC), "The first module must be an oscillator"
+        
+        for effect in self.effects:
+            assert not isinstance(effect, OSC), "Oscillator cannot be in effect chain"
 
-        if self.effects is not None:
-            for effect in self.effects:
-                assert not isinstance(effect, OSC), "Oscillator cannot be in effect chain"
-
-    def __call__(self):
+    def __call__(self, signal):
 
 
-        signal = self.generator()
-
-        if self.effects is not None:
-            for i in range(len(self.effects)):
-                signal = self.effects[i](signal)
+        for i in range(len(self.effects)):
+            signal = self.effects[i](signal)
 
         return signal
 
@@ -56,17 +52,17 @@ class MIDIStream(Stream):
             [pitch, start, end] = ls
             if start - prev_ls[2] > 0: # having rest between previous event
                 osc = OSC(self.osc_type,  2, start-prev_ls[2])
-                chain = Chain(osc, self.effects)
-                output_stream.append(chain)
+                # chain = Chain(osc, self.effects)
+                output_stream.append(osc)
             freq = Midi2Freq(pitch)
             osc = OSC(self.osc_type , freq, end-start)
-            chain = Chain(osc, self.effects)
-            output_stream.append(chain)
+            # chain = Chain(osc, self.effects)
+            output_stream.append(osc)
             prev_ls = ls
 
         return output_stream
 
-    def generate(self, midi_info_ls):
+    def render(self, midi_info_ls):
         if len(midi_info_ls) == 0:
             raise RuntimeError("Empty Midi List")
 
@@ -77,12 +73,12 @@ class MIDIStream(Stream):
             [pitch, start, end] = ls
             if start - prev_ls[2] > 0: # having rest between previous event
                 osc = OSC(self.osc_type,  2, start-prev_ls[2])
-                chain = Chain(osc, self.effects)
-                output_stream.extend(chain())
+                # chain = Chain(osc, self.effects)
+                output_stream.extend(osc())
             freq = Midi2Freq(pitch)
             osc = OSC(self.osc_type , freq, end-start)
-            chain = Chain(osc, self.effects)
-            output_stream.extend(chain())
+            # chain = Chain(osc, self.effects)
+            output_stream.extend(osc())
             prev_ls = ls
 
         return np.array(output_stream)
