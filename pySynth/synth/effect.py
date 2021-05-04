@@ -237,7 +237,7 @@ class Reverb(object):
 
 
 class Delay(object):
-    def __init__(self, delayTime = 0.5):
+    def __init__(self, delayTime = 0.25):
         '''
         Add on effect - Delay
         input: delayTime
