@@ -4,7 +4,7 @@ from .oscillator import OSC
 from .filter import BandPass, LowPass
 from .effect import Chorus
 from pySynth.control.stream import Stream, MIDIStream
-class AddSynth:
+class AddSynth:    
     def __init__(self, *streams):
         self.streams = list(streams)
         self.max_len = max([len(s) for s in self.streams])
