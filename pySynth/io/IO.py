@@ -32,7 +32,7 @@ class ReadMIDI(object):
         return self.midi_info_ls
         #outputs.sort(key=lambda elem: elem[0])
 
-def saveAudio(filename, data, sr = 44100, format = "wav", bit_depth = 16, float32 = True):
+def saveAudio(filename, data, sr = 44100, format = "wav", bit_depth = 16):
 
     if bit_depth == 16:
         dtype = "PCM_16"
