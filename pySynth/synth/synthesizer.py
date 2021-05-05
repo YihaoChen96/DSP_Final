@@ -10,7 +10,7 @@ class AddSynth:
         self.streams = np.vstack(self.streams)
     
     def __call__(self):
-        return np.mean(self.streams, axis = 0)
+        return np.sum(self.streams, axis = 0)
 
 
 class WaveTable:
