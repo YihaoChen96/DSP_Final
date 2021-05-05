@@ -1,6 +1,11 @@
-import pretty_midi
 import os
 from glob import glob
+
+import pretty_midi
+import numpy as np
+from scipy.io import wavfile
+import soundfile as sf
+
 pretty_midi.pretty_midi.MAX_TICK = 1e10
 
 class ReadMIDI(object):
@@ -25,6 +30,27 @@ class ReadMIDI(object):
         return self.midi_info_ls
         #outputs.sort(key=lambda elem: elem[0])
 
+def saveAudio(filename, data, sr = 44100, format = "wav", bit_depth = 16):
+
+    if bit_depth == 16:
+        dtype = "PCM_16"
+    elif bit_depth == 24:
+        dtype = "PCM_24"
+    elif bit_depth == 8:
+        dtype = "PCM_S8"
+    else:
+        raise Exception("Bit depth not supported")
+
+    # Write into wav first
+    # wavfile.write(filename, sr, data.astype(dtype))
+    
+    sf.write(filename, data, sr, subtype=dtype, format = format)
+
+
+    # # Convert into mp3
+    # if format == "mp3":
+    #     audio = AudioSegment.from_wav(filename)
+    #     audio.export(filename, format = "mp3")
 
 '''
 # test script

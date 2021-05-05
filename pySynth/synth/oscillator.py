@@ -55,7 +55,10 @@ class OSC:
             TODO: For each function, specify params and output in docstring
         
         """
+        
         self.name=name
+        assert self.name in ["sine", "triangle", "square"], "Osc only support sine, triangle, and square wave"
+        
         self.freq=freq
         self.length=length
         self.adsr = adsr
