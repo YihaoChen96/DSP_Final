@@ -27,5 +27,3 @@ You will now be able to use the package. Examples are shown in notebooks/DSP.ipy
 - Yihao Chen - ychen3237@gatech.edu
 - Tess Hu - tess.hu@gatech.edu
 - Jerry Xu - jxu605@gatech.edu
-
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
