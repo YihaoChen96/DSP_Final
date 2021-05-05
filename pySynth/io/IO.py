@@ -34,15 +34,14 @@ class ReadMIDI(object):
 
 def saveAudio(filename, data, sr = 44100, format = "wav", bit_depth = 16, float32 = True):
 
-    if bit_depth == 32:
-        if float32:
-            dtype = np.float32
-        else:
-            dtype = np.int32
-    elif bit_depth == 16:
+    if bit_depth == 16:
         dtype = "PCM_16"
     elif bit_depth == 24:
         dtype = "PCM_24"
+    elif bit_depth == 8:
+        dtype = "PCM_S8"
+    else:
+        raise Exception("Bit depth not supported")
 
     # Write into wav first
     # wavfile.write(filename, sr, data.astype(dtype))
