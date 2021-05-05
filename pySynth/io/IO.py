@@ -4,8 +4,6 @@ from glob import glob
 import pretty_midi
 import numpy as np
 from scipy.io import wavfile
-from mido import MidiFile
-from pydub import AudioSegment
 import soundfile as sf
 
 pretty_midi.pretty_midi.MAX_TICK = 1e10
